@@ -22,7 +22,8 @@ module.exports = {
             if (error) {
                 return res.status(400).json({
                     success: 0,
-                    message: "Database connection error"
+                    message: "Database connection error",
+                    error: error
                 });
             }
             return res.status(200).json({

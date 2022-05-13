@@ -5,7 +5,14 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "nodemon src/app.js"
+    "dev": "nodemon src/app.js",
+    "build": "npm run build:prod",
+    "build:prod": "npm run build:clean && npm run build:copy",
+    "build:clean": "rm -rf dist",
+    "build:copy": "cp -r src/public dist",
+    "start": "npm run dev",
+    "install": "npm i",
+    "uninstall": "npm uninstall"
   },
   "keywords": [],
   "author": "",
