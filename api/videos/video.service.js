@@ -40,10 +40,10 @@ module.exports = {
             }
         )
     },
-    getVideosActive: (limit, offset, callback) => {
+    getVideosActive: (limit, offset, sort, callback) => {
         pool.query(
-            `SELECT * FROM videos WHERE active = 1 ORDER BY id DESC LIMIT ? OFFSET ?`,
-            [limit, offset],
+            `SELECT * FROM videos WHERE active = 1 ORDER BY id ? LIMIT ? OFFSET ?`,
+            [sort, limit, offset],
             (error, results, fields) => {
                 if(error){
                     return callback(error);
@@ -52,11 +52,13 @@ module.exports = {
             }
         )
     },
-    getVideosPartial: (limit, offset, callback) => {
+    getVideosPartial: (limit, offset, sort, callback) => {
         pool.query(
-            `SELECT * FROM videos ORDER BY id DESC LIMIT ? OFFSET ?`,
+            `SELECT * FROM videos ORDER BY id ${sort} LIMIT ? OFFSET ?`,
             [limit, offset],
             (error, results, fields) => {
+                console.log(results);
+                console.log(error);
                 if(error){
                     return callback(error);
                 }
