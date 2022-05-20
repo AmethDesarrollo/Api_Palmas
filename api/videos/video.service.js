@@ -57,8 +57,6 @@ module.exports = {
             `SELECT * FROM videos ORDER BY id ${sort} LIMIT ? OFFSET ?`,
             [limit, offset],
             (error, results, fields) => {
-                console.log(results);
-                console.log(error);
                 if(error){
                     return callback(error);
                 }
@@ -79,7 +77,6 @@ module.exports = {
         );
     },
     updateVideo(data, callback) {
-        console.log(data);
         pool.query(
             `UPDATE videos SET url=?, user=?, active=? WHERE id=?`,
             [

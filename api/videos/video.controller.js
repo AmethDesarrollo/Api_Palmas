@@ -51,7 +51,6 @@ module.exports = {
         const limit = parseInt(req.query.limit);
         const offset = parseInt(req.query.offset);
         const sort = req.query.sort;
-        console.log(sort);
         getVideosPartial(limit, offset, sort,  (error, results) => {
             if (error) {
                 return res.status(400).json({
@@ -69,7 +68,6 @@ module.exports = {
         const limit = parseInt(req.query.limit);
         const offset = parseInt(req.query.offset);
         const sort = req.query.sort;
-        console.log(sort);
         getVideosActive(limit, offset, sort, (error, results) => {
             if (error) {
                 return res.status(400).json({

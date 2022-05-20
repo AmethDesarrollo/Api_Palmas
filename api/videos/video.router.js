@@ -3,7 +3,7 @@ const router = require('express').Router();
 const { checkToken } = require('../../auth/token_validation');
 
 router.get('/', getVideos);
-router.post('/', createVideo);
+router.post('/',checkToken, createVideo);
 router.get('/partial', getVideosPartial);
 router.get('/active', getVideosActive);
 router.get('/count', countVideos);

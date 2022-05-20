@@ -3,6 +3,8 @@ const { createUser, getUserById, getUsers, updateUser, deleteUser, getUserByEmai
 const { genSaltSync, hashSync, compareSync } = require('bcrypt');
 const { sign } = require('jsonwebtoken');
 
+const tokenList = {}
+
 module.exports = {
     createUser: (req, res) => {
         const body = req.body;
@@ -11,7 +13,6 @@ module.exports = {
 
         createUser(body, (error, results) => {
             if (error) {
-                console.log(error);
                 return res.status(400).json({
                     success: 0,
                     message: "Database connection error"
@@ -27,7 +28,6 @@ module.exports = {
         const id = req.params.id;
         getUserById(id, (error, results) => {
             if (error) {
-                console.log(error);
                 return res.status(400).json({
                     success: 0,
                     message: "Database connection error"
@@ -49,14 +49,16 @@ module.exports = {
     getUsers: (req, res) => {
         getUsers((err, results) => {
             if (err) {
-                console.log(err);
-                return;
+                return res.status(400).json({
+                    success: 0,
+                    message: "Database connection error"
+                });
             }
             return res.json({
                 success: 1,
                 data: results
             });
-        }); 
+        });
     },
     updateUser: (req, res) => {
         const body = req.body;
@@ -65,9 +67,7 @@ module.exports = {
         body.password = hashSync(body.password, salt);
 
         updateUser(id, body, (error, results) => {
-            console.log(results);
             if (error) {
-                console.log(error);
                 return res.status(400).json({
                     success: 0,
                     message: "Database connection error"
@@ -90,7 +90,6 @@ module.exports = {
 
         deleteUser(id, (error, results) => {
             if (error) {
-                console.log(error);
                 return res.status(400).json({
                     success: 0,
                     message: "Database connection error"
@@ -111,11 +110,7 @@ module.exports = {
     login: (req, res) => {
         const body = req.body;
         getUserByEmail(body.email, (error, results) => {
-            console.log("results: " + JSON.stringify(results));
-            console.log("error:" + error);
-            console.log(compareSync(body.password, results.password))
             if (error) {
-                console.log(error);
                 return res.status(200).json({
                     success: 400,
                     message: "Database connection error"
@@ -132,17 +127,37 @@ module.exports = {
                     success: 409,
                     message: "Wrong password"
                 });
-            }else{
+            } else {
                 results.password = undefined;
-                const token = sign({ results: results}, process.env.TOKEN, { expiresIn: '1h' });
-    
+                const token = sign({ results: results }, process.env.TOKEN, { expiresIn: '900' });
+                const refreshToken = sign({ results: results }, process.env.TOKEN_REFRESH, { expiresIn: '86400' })
                 return res.status(200).json({
                     success: 200,
                     message: "Login success",
                     token: token,
+                    refreshToken: refreshToken,
                     data: results
                 });
             }
         });
+    },
+    token: (req, res) => {
+        // refresh the damn token
+        const postData = req.body
+        // if refresh token exists
+        if ((postData.refreshToken) && (postData.refreshToken in tokenList)) {
+            const user = {
+                "email": postData.email,
+            }
+            const token = sign(user, config.secret, { expiresIn: config.tokenLife })
+            const response = {
+                "token": token,
+            }
+            // update the token in the list
+            tokenList[postData.refreshToken].token = token
+            res.status(200).json(response);
+        } else {
+            res.status(404).send('Invalid request')
+        }
     }
 };
