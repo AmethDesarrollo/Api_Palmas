@@ -55,6 +55,7 @@ module.exports = {
         });
     },
     getUploadPartial: (req, res) => {
+        console.log(req.query);
         const limit = parseInt(req.query.limit);
         const offset = parseInt(req.query.offset);
         const sort = req.query.sort;
@@ -87,8 +88,11 @@ module.exports = {
         });
     },
     getUploadActive: (req, res) => {
-        const id = req.params.id;
-        getUploadActive(id, (error, results) => {
+        console.log(req.query);
+        const limit = parseInt(req.query.limit);
+        const offset = parseInt(req.query.offset);
+        const sort = req.query.sort;
+        getUploadActive(limit, offset, sort, (error, results) => {
             if (error) {
                 return res.status(400).json({
                     success: 0,

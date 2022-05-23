@@ -45,9 +45,23 @@ module.exports = {
         )
     },
     getUploadActive: (limit, offset, sort, callback) => {
+        if(limit == -1){
+            limit = '';
+        }
+        else{
+            limit = 'LIMIT ' + limit;
+        }
+
+        if(offset == -1){
+            offset = '';
+        }
+        else{
+            offset = 'OFFSET ' + offset;
+        }
+
         pool.query(
-            `SELECT * FROM uploads WHERE active = 1 ORDER BY id ? LIMIT ? OFFSET ?`,
-            [sort, limit, offset],
+            `SELECT * FROM uploads  WHERE active = 1 ORDER BY id ${sort} ${limit} ${offset}`,
+            [],
             (error, results, fields) => {
                 if(error){
                     return callback(error);
@@ -57,9 +71,24 @@ module.exports = {
         )
     },
     getUploadPartial: (limit, offset, sort, callback) => {
+
+        if(limit == -1){
+            limit = '';
+        }
+        else{
+            limit = 'LIMIT ' + limit;
+        }
+
+        if(offset == -1){
+            offset = '';
+        }
+        else{
+            offset = 'OFFSET ' + offset;
+        }
+
         pool.query(
-            `SELECT * FROM uploads ORDER BY id ${sort} LIMIT ? OFFSET ?`,
-            [limit, offset],
+            `SELECT * FROM uploads ORDER BY id ${sort} ${limit} ${offset}`,
+            [],
             (error, results, fields) => {
                 if(error){
                     return callback(error);
