@@ -42,9 +42,11 @@ module.exports = {
     },
     getVideosActive: (limit, offset, sort, callback) => {
         pool.query(
-            `SELECT * FROM videos WHERE active = 1 ORDER BY id ? LIMIT ? OFFSET ?`,
-            [sort, limit, offset],
+            `SELECT * FROM videos WHERE active = 1 ORDER BY id ${sort} LIMIT ? OFFSET ?`,
+            [limit, offset],
             (error, results, fields) => {
+                console.log(results);
+                console.log(error);
                 if(error){
                     return callback(error);
                 }
